@@ -1,14 +1,4 @@
-/************************************
- * app.js
- * Contains all the random logic,
- * data, and slot machine animation.
- ************************************/
 
-/**
- * 1. Food data & probability
- *    (Originally in the Node.js backend,
- *     now moved to the front end)
- */
 const foodList = [
     // Normal diet: Common
     { name: '宫保鸡丁', rarity: '普通', category: '正常饮食' },
@@ -51,17 +41,13 @@ const foodList = [
     { name: '顶级刺身拼盘', rarity: '传说', category: '减脂饮食' },
   ];
   
-  // Probability of each rarity (sum = 100)
   const rarityProbability = {
-    '普通': 60,
-    '稀有': 25,
-    '史诗': 10,
-    '传说': 5
+    '普通': 80,
+    '稀有': 15,
+    '史诗': 4,
+    '传说': 1
   };
-  
-  /**
-   * 2. Random logic
-   */
+
   function getRandomRarity() {
     const rand = Math.random() * 100; // 0 ~ 100
     let sum = 0;
@@ -87,13 +73,10 @@ const foodList = [
     return getRandomFoodByRarityAndCategory(rarity, category);
   }
   
-  /**
-   * 3. UI Interactions
-   */
+
   const spinBtn = document.getElementById('spinBtn');
   const slotContent = document.getElementById('slotContent');
   
-  /** Read which radio button is selected: "", "正常饮食", or "减脂饮食" */
   function getSelectedCategory() {
     const radios = document.getElementsByName('foodCategory');
     for (let r of radios) {
@@ -102,7 +85,6 @@ const foodList = [
     return ''; // fallback
   }
   
-  /** Rarity color mapping */
   function getColorByRarity(rarity) {
     switch (rarity) {
       case '普通': return 'gray';
@@ -113,14 +95,9 @@ const foodList = [
     }
   }
   
-  /**
-   * Generate 4 lines for rolling:
-   * - 3 "fake" results
-   * - 1 final real result
-   */
   function getRollingFoods(category) {
     const lines = [];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 7; i++) {
       const f = getRandomFood(category) || { name: '暂无菜品', rarity: '普通', category: '' };
       lines.push(f);
     }
@@ -129,15 +106,13 @@ const foodList = [
     return lines;
   }
   
-  /** Start the slot animation (scrolling) */
   function startSlotAnimation(foods) {
     // Reset transition to ensure multiple spins start from top
     slotContent.style.transition = 'none';
     slotContent.style.top = '0px';
     slotContent.offsetHeight; // Force reflow
     slotContent.style.transition = 'top 1s ease-out';
-  
-    // Build the HTML
+
     let html = '';
     foods.forEach((food, index) => {
       const color = getColorByRarity(food.rarity);
@@ -162,7 +137,6 @@ const foodList = [
     }, 50);
   }
   
-  /** On button click => get rolling foods => animate */
   spinBtn.addEventListener('click', () => {
     const category = getSelectedCategory();
     const rollingFoods = getRollingFoods(category);
